@@ -1,38 +1,55 @@
 import React from 'react';
-import PropTypes from "prop-types";
+import axios from 'axios';
+import Movie from './Movie';
+import './App.css';
 
-function Food({name, picture, rating}){  /* props.fav == {fav} */
-  return <div>{name}, {picture}, {rating} </div>
+class App extends React.Component{
+
+state = {
+    isLoading: true,
+    movies: []
+};
+
+getMovies = async () => {
+    const {
+        data : {
+            data : {movies}
+        }
+    } = await axios.get("https://yts-proxy.now.sh/list_movies.json?sort_by=rating")
+    this.setState( {movies:movies, isLoading: false});
+}
+async componentDidMount(){
+    this.getMovies();
+    
 }
 
-Food.propTypes = {
-  name: PropTypes.string.isRequired,
-  picture: PropTypes.string.isRequired,
-  rating: PropTypes.number.isRequired
+    render() {
+        const { isLoading, movies } = this.state;
+        return (
+        <section class="container">
+            {this.state.isLoading ? 
+                <div class="loader">
+                    <span class="loader_text">Loading...</span>
+                </div>
+                : 
+                <div class="movies">
+                    {
+                        movies.map(movie => {
+                            console.log(movie);
+                            return(
+                            <Movie 
+                            key={movie.id}
+                            id={movie.id} 
+                            year={movie.year} summary={movie.summmary} title={movie.title} 
+                            poster={movie.medium_cover_image}
+                            genres={movie.genres}/>
+                            )
+                        })
+                    }
+                </div>
+            }
+        </section>
+        );
+    }
 }
-
-const foodILike = [
-  {
-    id: 1,
-    name: "kimchi",
-    image: "no",
-    rating: 5
-  },
-  {
-    id: 2,
-    name: "chchch",
-    image: "bobobo",
-    rating:4.9
-  }
-]
-function App() {
-  return ( 
-  <div>
-  {foodILike.map(dish => (
-    <Food key= {dish.id} name = {dish.name} picture = {dish.image} rating = {dish.rating}/>
-  ))}
-  </div>
-   ) /*return하고 줄 바꾸면 외않됨?*/
-}
-
 export default App;
