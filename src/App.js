@@ -40,7 +40,7 @@ async componentDidMount(){
                             <Movie 
                             key={movie.id}
                             id={movie.id} 
-                            year={movie.year} summary={movie.summmary} title={movie.title} 
+                            year={movie.year} summary={movie.summary} title={movie.title} 
                             poster={movie.medium_cover_image}
                             genres={movie.genres}/>
                             )
